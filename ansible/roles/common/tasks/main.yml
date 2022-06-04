@@ -45,6 +45,17 @@
     name: gnupg2
     state: latest
 
+# Install Python3
+- name: Update python3
+  ansible.builtin.apt:
+    name: python3
+    state: latest
+
+- name: Update python3-pip
+  ansible.builtin.apt:
+    name: python3-pip
+    state: latest
+
 # Add docker repo
 - name: Add docker repo gpg key
   ansible.builtin.apt_key:

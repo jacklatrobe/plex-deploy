@@ -5,161 +5,151 @@
 #####################################################################################
 ## Install Transmission
 #####################################################################################
-- name: Install Transmission
+- name: Install transmission-common
+  ansible.builtin.apt:
+    name: transmission-common
+    state: latest
 
-  # https://www.addictivetips.com/media-streaming/kodi/install-transmission-raspberry-pi-torrent/
+- name: Install transmission-cli
+  ansible.builtin.apt:
+    name: transmission-cli
+    state: latest
 
-  tasks:
-    - name: Install transmission-common
-      ansible.builtin.apt:
-        name: transmission-common
-        state: latest
+- name: Install transmission-daemon
+  ansible.builtin.apt:
+    name: transmission-daemon
+    state: latest
+  
+- name: Increase UDP wmem max size
+  ansible.posix.sysctl:
+    name: net.core.wmem_max
+    value: '1048576'
+    state: present
+    reload: yes
+    ignoreerrors: no
+  tags:
+  - deploy_configs
 
-    - name: Install transmission-cli
-      ansible.builtin.apt:
-        name: transmission-cli
-        state: latest
+- name: Increase UDP rmem max size
+  ansible.posix.sysctl:
+    name: net.core.rmem_max
+    value: '4194304'
+    state: present
+    reload: yes
+    ignoreerrors: no
+  tags:
+  - deploy_configs
 
-    - name: Install transmission-daemon
-      ansible.builtin.apt:
-        name: transmission-daemon
-        state: latest
-      
-    - name: Increase UDP wmem max size
-      ansible.posix.sysctl:
-        name: net.core.wmem_max
-        value: '1048576'
-        state: present
-        reload: yes
-        ignoreerrors: no
-      tags:
-      - deploy_configs
+- name: Stop the transmission service
+  ansible.builtin.systemd:
+    name: transmission-daemon.service
+    state: stopped
+  tags:
+  - deploy_configs
 
-    - name: Increase UDP rmem max size
-      ansible.posix.sysctl:
-        name: net.core.rmem_max
-        value: '4194304'
-        state: present
-        reload: yes
-        ignoreerrors: no
-      tags:
-      - deploy_configs
+- name: Write transmission config file
+  ansible.builtin.template:
+    src: ./templates/transmission_settings.json
+    dest: /etc/transmission-daemon/settings.json
+    owner: debian-transmission
+    group: debian-transmission
+    mode: 0644
+  tags:
+  - deploy_configs
 
-    - name: Stop the transmission service
-      ansible.builtin.systemd:
-        name: transmission-daemon.service
-        state: stopped
-      tags:
-      - deploy_configs
+- name: Write transmission service file
+  ansible.builtin.template:
+    src: ./templates/transmission-daemon.service
+    dest: /lib/systemd/system/transmission-daemon.service
+    owner: debian-transmission
+    group: debian-transmission
+    mode: 0644
+  tags:
+  - deploy_configs
 
-    - name: Write transmission config file
-      ansible.builtin.template:
-        src: ./templates/transmission_settings.json
-        dest: /etc/transmission-daemon/settings.json
-        owner: debian-transmission
-        group: debian-transmission
-        mode: 0644
-      tags:
-      - deploy_configs
+- name: Just force systemd to reread configs (2.4 and above)
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  tags:
+  - deploy_configs
 
-    - name: Write transmission service file
-      ansible.builtin.template:
-        src: ./templates/transmission-daemon.service
-        dest: /lib/systemd/system/transmission-daemon.service
-        owner: debian-transmission
-        group: debian-transmission
-        mode: 0644
-      tags:
-      - deploy_configs
-
-    - name: Just force systemd to reread configs (2.4 and above)
-      ansible.builtin.systemd:
-        daemon_reload: yes
-      tags:
-      - deploy_configs
-
-    - name: Start the transmission service
-      ansible.builtin.systemd:
-        name: transmission-daemon.service
-        state: started
-      tags:
-      - deploy_configs
+- name: Start the transmission service
+  ansible.builtin.systemd:
+    name: transmission-daemon.service
+    state: started
+  tags:
+  - deploy_configs
 
 
 #####################################################################################
 ## Install FlexGet
 #####################################################################################
-- name: Install FlexGet
+- name: Create FlexGet directory
+  ansible.builtin.file:
+    path: /opt/flexget
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
-  # https://flexget.com/Install
+- name: Create media directory
+  ansible.builtin.file:
+    dest: /mnt/media
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
 
-  tasks:
-    - name: Create FlexGet directory
-      ansible.builtin.file:
-        path: /opt/flexget
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
+- name: Install flexget
+  ansible.builtin.pip:
+    name: flexget
+    state: latest
+    virtualenv: /opt/flexget/
 
-    - name: Create media directory
-      ansible.builtin.file:
-        dest: /mnt/media
-        state: directory
-        owner: root
-        group: root
-        mode: '0777'
+- name: Install transmissionrpc
+  ansible.builtin.pip:
+    name: transmissionrpc
+    state: latest
+    virtualenv: /opt/flexget/
+    virtualenv_python: python3.7
 
-    - name: Install flexget
-      ansible.builtin.pip:
-        name: flexget
-        state: latest
-        virtualenv: /opt/flexget/
+# Different things?...
+- name: Install transmission-rpc
+  ansible.builtin.pip:
+    name: transmission-rpc
+    state: latest
+    virtualenv: /opt/flexget/
+    virtualenv_python: python3.7
 
-    - name: Install transmissionrpc
-      ansible.builtin.pip:
-        name: transmissionrpc
-        state: latest
-        virtualenv: /opt/flexget/
-        virtualenv_python: python3.7
+- name: Write FlexGet config file
+  ansible.builtin.copy:
+    src: ./roles/flexget/templates/flexget.service
+    dest: /opt/flexget/config.yml
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+  - deploy_configs
 
-    # Different things?...
-    - name: Install transmission-rpc
-      ansible.builtin.pip:
-        name: transmission-rpc
-        state: latest
-        virtualenv: /opt/flexget/
-        virtualenv_python: python3.7
+- name: Write FlexGet systemd service file
+  ansible.builtin.template:
+    src: ./roles/flexget/templates/flexget.service
+    dest: /usr/lib/systemd/system/flexget.service
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+  - deploy_configs
 
-    - name: Write FlexGet config file
-      ansible.builtin.copy:
-        src: ./roles/flexget/templates/flexget.service
-        dest: /opt/flexget/config.yml
-        owner: root
-        group: root
-        mode: 0644
-      tags:
-      - deploy_configs
+- name: Just force systemd to reread configs (2.4 and above)
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  tags:
+  - deploy_configs
 
-    - name: Write FlexGet systemd service file
-      ansible.builtin.template:
-        src: ./roles/flexget/templates/flexget.service
-        dest: /usr/lib/systemd/system/flexget.service
-        owner: root
-        group: root
-        mode: 0644
-      tags:
-      - deploy_configs
-
-    - name: Just force systemd to reread configs (2.4 and above)
-      ansible.builtin.systemd:
-        daemon_reload: yes
-      tags:
-      - deploy_configs
-
-    - name: Restart the FlexGet service
-      ansible.builtin.systemd:
-        name: flexget.service
-        state: restarted
-      tags:
-      - deploy_configs
+- name: Restart the FlexGet service
+  ansible.builtin.systemd:
+    name: flexget.service
+    state: restarted
+  tags:
+  - deploy_configs
