@@ -1,4 +1,4 @@
-ariable "tags" {
+variable "tags" {
   type    = list(string)
   default = ["plex"]
 }

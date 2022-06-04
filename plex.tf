@@ -17,19 +17,16 @@ resource "digitalocean_droplet" "plex1" {
   backups = true
   monitoring = true
   ipv6 = true
-  private_networking = false
 
   ssh_keys = [digitalocean_ssh_key.default.fingerprint]
 
-  tags = vars.tags
+  tags = var.tags
 }
 
 # Assign a floating IP to the droplet
 resource "digitalocean_floating_ip" "plex_ip" {
   droplet_id = digitalocean_droplet.plex1.id
   region     = digitalocean_droplet.plex1.region
-
-  tags = vars.tags
 }
 
 # Add a firewall to the web Server
@@ -72,5 +69,5 @@ resource "digitalocean_firewall" "plex-firewall" {
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 
-  tags = vars.tags
+  tags = var.tags
 }

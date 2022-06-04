@@ -14,7 +14,5 @@ resource "digitalocean_project" "plex_project" {
   purpose     = "Plex"
   environment = "Production"
   resources   = [
-      digitalocean_droplet.plex1.urn,
-      digitalocean_firewall.plex-firewall.urn,
-      digitalocean_floating_ip.plex_ip.urn]
+      digitalocean_droplet.plex1.urn]
 }
