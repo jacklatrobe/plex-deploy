@@ -1,0 +1,27 @@
+---
+## File: roles/flexget/tasks/main.yml
+## Purpose: Executes the tasks for the flexget role
+
+#####################################################################################
+## Install Plex
+#####################################################################################
+- name: Install Plex
+
+  tasks:
+   - name: Start Plex Container
+     community.docker.docker_container:
+       name: plex
+       image: lscr.io/linuxserver/plex:latest
+       state: started
+       restart: unless_stopped
+       network_mode: host
+       env:
+         TZ: "Australia/Melbourne"
+         VERSION: "docker"
+         PUID: "1000"
+         PGID: "1000"
+       volumes:
+         /mnt/media/plex/config:/config:rw
+         /mnt/media/plex/data:/data:rw
+     tags:
+     - launch_plex

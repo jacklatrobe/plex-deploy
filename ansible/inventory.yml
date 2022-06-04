@@ -1,0 +1,15 @@
+---
+###########################################################
+## DevOps Workspace Environment                          ##
+## By Jack Latrobe - Head of DevOps @ Swoop Analytics    ##
+## https://latrobe.group/       jack@jack-latrobe.com    ##
+###########################################################
+## File: inventory                                       ##
+## Purpose: Ansible inventory for devops environment     ##
+########################################################### 
+# Later, I might automate this with: https://www.digitalocean.com/community/tools/do-ansible-inventory
+
+plex_servers:
+  hosts:
+    plex1:
+      ansible_host: 137.184.249.64

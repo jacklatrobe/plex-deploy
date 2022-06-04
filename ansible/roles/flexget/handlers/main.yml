@@ -1,0 +1,4 @@
+---
+## File: roles/flexget/handlers/main.yml
+## Purpose: Executes the handlers for the flexget role
+

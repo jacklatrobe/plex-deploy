@@ -1,0 +1,16 @@
+[Unit]
+Description=Flexget Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+UMask=000
+WorkingDirectory=/opt/flexget/
+ExecStart=/opt/flexget/bin/flexget-headless daemon start
+ExecStop=/opt/flexget/bin/flexget-headless daemon stop
+ExecReload=/opt/flexget/bin/flexget-headless daemon reload
+
+[Install]
+WantedBy=multi-user.target

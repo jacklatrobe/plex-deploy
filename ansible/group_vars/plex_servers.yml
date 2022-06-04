@@ -1,0 +1,7 @@
+---
+## File: group_vars/devops_servers.yml
+## Purpose: Sets variables for the devops servers
+
+ansible_port: 22
+ansible_user: root
+ansible_become: yes

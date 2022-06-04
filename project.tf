@@ -14,5 +14,6 @@ resource "digitalocean_project" "plex_project" {
   purpose     = "Plex"
   environment = "Production"
   resources   = [
-      digitalocean_droplet.plex1.urn]
+      digitalocean_droplet.plex1.urn,
+      digitalocean_volume.plex_vol.urn]
 }

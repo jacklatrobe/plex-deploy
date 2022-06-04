@@ -1,0 +1,16 @@
+---
+###########################################################
+## Plex Workspace Environment                            ##
+## By Jack Latrobe                                       ##
+## https://latrobe.group/       jack@jack-latrobe.com    ##
+###########################################################
+## File: main.yml                                        ##
+## Purpose: Ansible Entrypoint for plex env config mgmt  ##
+########################################################### 
+
+# Apply "common" and "plex" roles to the plex servers
+- hosts: plex_servers
+  roles:
+    - common
+    - flexget
+    - plex

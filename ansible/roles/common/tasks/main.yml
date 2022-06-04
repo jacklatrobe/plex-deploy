@@ -1,0 +1,71 @@
+---
+## File: roles/common/main.yml
+## Purpose: Executes the tasks for the common role
+
+# Update all software
+- name: Upgrade all apt packages
+  ansible.builtin.apt:
+    name: '*'
+    state: latest
+  tags: apt-update
+
+# Install git
+- name: Install git
+  ansible.builtin.apt:
+    name: git
+    state: latest
+
+# Enable apt to use HTTPS
+- name: Install apt-transport-https
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: latest
+
+# Update CA certs
+- name: Update ca-certificates
+  ansible.builtin.apt:
+    name: ca-certificates
+    state: latest
+
+# Update curl
+- name: Install curl
+  ansible.builtin.apt:
+    name: curl
+    state: latest
+
+# Update software-properties-common
+- name: Update software-properties-common
+  ansible.builtin.apt:
+    name: software-properties-common
+    state: latest
+
+# Install gnupg2
+- name: Update gnupg2
+  ansible.builtin.apt:
+    name: gnupg2
+    state: latest
+
+# Add docker repo
+- name: Add docker repo gpg key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add docker repo
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+# Install docker CE
+- name: Install docker-ce
+  ansible.builtin.apt:
+    name: docker-ce
+    state: latest
+
+- name: Install docker python3 SDK
+  ansible.builtin.pip:
+    name: docker
+    executable: pip3
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    state: started

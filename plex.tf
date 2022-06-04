@@ -7,12 +7,23 @@
 ## Purpose: Provisions infra for plex and flexget        ##
 ########################################################### 
 
+# Create plex storage volume
+resource "digitalocean_volume" "plex_vol" {
+  region                  = var.region
+  name                    = "plex-vol"
+  size                    = 250
+  initial_filesystem_type = "ext4"
+  initial_filesystem_label = "plexvol"
+  description             = "Plex media volume"
+
+  tags = var.tags
+}
 
 # Create a ubuntu plex server
 resource "digitalocean_droplet" "plex1" {
   image  = "ubuntu-20-04-x64"
   name   = "plex1"
-  region = "sgp1"
+  region = var.region
   size   = "c-2"
   backups = true
   monitoring = true
@@ -23,13 +34,19 @@ resource "digitalocean_droplet" "plex1" {
   tags = var.tags
 }
 
+# Attach volume to the droplet
+resource "digitalocean_volume_attachment" "foobar" {
+  droplet_id = digitalocean_droplet.plex1.id
+  volume_id  = digitalocean_volume.plex_vol.id
+}
+
 # Assign a floating IP to the droplet
 resource "digitalocean_floating_ip" "plex_ip" {
   droplet_id = digitalocean_droplet.plex1.id
   region     = digitalocean_droplet.plex1.region
 }
 
-# Add a firewall to the web Server
+# Add a firewall to the plex server
 resource "digitalocean_firewall" "plex-firewall" {
   name = "plex-firewall"
 

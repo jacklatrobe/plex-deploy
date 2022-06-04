@@ -1,0 +1,65 @@
+templates:
+  movies:
+    imdb:
+      min_score: 7.5
+      min_votes: 250
+    transmission:
+      enabled: yes
+      host: 127.0.0.1
+      port: 9091
+      username: transmission
+      password: "lol12345"
+  tv:
+    private_torrents: no
+    series:
+      settings:
+        tv:
+          exact: yes
+          propers: 7 days
+          quality: 720p+
+          set:
+            path: /mnt/media/{{series_name}}
+      tv:
+        - Archer
+        - Beavis and Butt-head
+        - Big Band Theory
+        - Breaking Bad
+        - Dexter
+        - Fringe
+        - Game of Thrones
+        - Mad Men
+        - MythBusters
+        - The Office
+        - South Park
+        - Queer Eye
+        - Parks and Recreation
+        - Brooklyn 99
+        - Last Week Tonight with John Oliver
+        - Pose
+        - Bobs Burgers
+        - Snowpiercer
+        - Castlevania
+        - Ru Pauls Drag Race
+    transmission:
+      enabled: yes
+      host: 127.0.0.1
+      port: 9091
+      username: transmission
+      password: "lol12345"
+
+tasks:
+  rarbg_tv:
+    priority: 1
+    rss: https://rarbg.to/rssdd.php?category=2;18;41;49
+    template: tv
+
+  rarbg_movies:
+    priority: 2
+    rss: https://rarbg.to/rssdd.php?category=48;44;45;54
+    template: movies
+
+
+schedules:
+- tasks: '*'
+  interval:
+    hours: 1

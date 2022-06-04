@@ -1,0 +1,4 @@
+---
+## File: roles/plex/handlers/main.yml
+## Purpose: Executes the handlers for the plex role
+
