@@ -5,20 +5,35 @@
 #####################################################################################
 ## Install Plex
 #####################################################################################
+- name: Create Plex Config directory
+  ansible.builtin.file:
+    path: /mnt/plex_vol/config/
+    state: directory
+    owner: debian-transmission
+    group: debian-transmission
+    mode: '0755'
+  
+- name: Create Plex Transcodes directory
+  ansible.builtin.file:
+    path: /mnt/plex_vol/transcode/
+    state: directory
+    owner: debian-transmission
+    group: debian-transmission
+    mode: '0755'
+
 - name: Start Plex Container
   community.docker.docker_container:
     name: plex
     image: lscr.io/linuxserver/plex:latest
     state: started
-    restart: unless_stopped
+    restart: yes
     network_mode: host
     env:
       TZ: "Australia/Melbourne"
       VERSION: "docker"
-      PUID: "1000"
-      PGID: "1000"
     volumes:
-      /mnt/media/plex/config:/config:rw
-      /mnt/media/plex/data:/data:rw
+      /mnt/plex_vol/config/:/config:rw
+      /mnt/plex_vol/media/:/data:rw
+      /mnt/plex_vol/transcode/:/transcode:rw
   tags:
   - launch_plex

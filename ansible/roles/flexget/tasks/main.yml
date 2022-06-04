@@ -5,6 +5,14 @@
 #####################################################################################
 ## Install Transmission
 #####################################################################################
+- name: Create Transmission directory
+  ansible.builtin.file:
+    path: /opt/transmission
+    state: directory
+    owner: debian-transmission
+    group: debian-transmission
+    mode: '0755'
+
 - name: Install transmission-common
   ansible.builtin.apt:
     name: transmission-common
@@ -94,7 +102,7 @@
 
 - name: Create media directory
   ansible.builtin.file:
-    dest: /mnt/media
+    dest: /mnt/plex_vol/media
     state: directory
     owner: root
     group: root
@@ -105,13 +113,14 @@
     name: flexget
     state: latest
     virtualenv: /opt/flexget/
+    virtualenv_python: python3.9
 
 - name: Install transmissionrpc
   ansible.builtin.pip:
     name: transmissionrpc
     state: latest
     virtualenv: /opt/flexget/
-    virtualenv_python: python3.7
+    virtualenv_python: python3.9
 
 # Different things?...
 - name: Install transmission-rpc
@@ -119,11 +128,11 @@
     name: transmission-rpc
     state: latest
     virtualenv: /opt/flexget/
-    virtualenv_python: python3.7
+    virtualenv_python: python3.9
 
 - name: Write FlexGet config file
   ansible.builtin.copy:
-    src: ./roles/flexget/templates/flexget.service
+    src: ./roles/flexget/templates/flexget_config.yml
     dest: /opt/flexget/config.yml
     owner: root
     group: root

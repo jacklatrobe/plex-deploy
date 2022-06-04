@@ -1,24 +1,25 @@
+---
 templates:
-  movies:
-    imdb:
-      min_score: 7.5
-      min_votes: 250
-    transmission:
-      enabled: yes
-      host: 127.0.0.1
-      port: 9091
-      username: transmission
-      password: "lol12345"
   tv:
+
+    manipulate:
+      - title: &the
+          replace:
+          regexp: '^The\W'
+          format: ''
+      - filename: *the
+      - series_name: *the
+
     private_torrents: no
+
     series:
       settings:
         tv:
           exact: yes
-          propers: 7 days
+          propers: 3 days
           quality: 720p+
           set:
-            path: /mnt/media/{{series_name}}
+            path: /mnt/plex_vol/media/{{series_name}}
       tv:
         - Archer
         - Beavis and Butt-head
@@ -30,36 +31,51 @@ templates:
         - Mad Men
         - MythBusters
         - The Office
+        - Real Time with Bill Maher
         - South Park
-        - Queer Eye
-        - Parks and Recreation
-        - Brooklyn 99
-        - Last Week Tonight with John Oliver
-        - Pose
-        - Bobs Burgers
-        - Snowpiercer
-        - Castlevania
-        - Ru Pauls Drag Race
+        - True Blood
+
     transmission:
       enabled: yes
-      host: 127.0.0.1
+      host: localhost
       port: 9091
       username: transmission
-      password: "lol12345"
+      password: lol12345
+      removewhendone: no
 
 tasks:
-  rarbg_tv:
+  bt-chat.com-tv:
     priority: 1
-    rss: https://rarbg.to/rssdd.php?category=2;18;41;49
+    rss: http://rss.bt-chat.com/?group=3
     template: tv
 
-  rarbg_movies:
+  ezrss.it:
     priority: 2
-    rss: https://rarbg.to/rssdd.php?category=48;44;45;54
-    template: movies
+    rss: http://ezrss.it/feed/
+    template: tv
 
+  thepiratebay.org-tv:
+    priority: 3
+    rss: http://rss.thepiratebay.org/208
+    template: tv
+    verify_ssl_certificates: no
 
-schedules:
-- tasks: '*'
-  interval:
-    hours: 1
+  kat.ph-tv:
+    priority: 4
+    rss: http://kat.ph/tv/?rss=1
+    template: tv
+
+  extratorrent.com-tv:
+    priority: 5
+    rss: http://extratorrent.com/rss.xml?cid=8
+    template: tv
+
+  torrentz.eu-tv:
+    priority: 6
+    rss: http://torrentz.eu/feed
+    template: tv
+
+  showrss.karmorra.info-tv:
+    priority: 7
+    rss: http://showrss.karmorra.info/feeds/all.rss
+    template: tv
