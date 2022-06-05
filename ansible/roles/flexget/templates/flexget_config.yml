@@ -1,9 +1,16 @@
 ---
 templates:
   movies:
+    exists_movie:
+    - /mnt/plex_vol/media/
     imdb:
-      min_score: 7.5
-      min_votes: 250
+      min_score: 7
+      min_votes: 100
+      accept_languages:
+            - english
+      reject_mpaa_ratings:
+            - X
+            - NONE
     transmission:
       enabled: yes
       host: 127.0.0.1
@@ -12,7 +19,9 @@ templates:
       password: "lol12345"
   tv:
     private_torrents: no
-
+    thetvdb_lookup: yes
+    exists_series:
+      - /mnt/plex_vol/media/
     series:
       settings:
         tv:
