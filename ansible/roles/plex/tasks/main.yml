@@ -31,6 +31,7 @@
     env:
       TZ: "Australia/Melbourne"
       VERSION: "docker"
+      PLEX_CLAIM: "claim-vR9XgobS8UjqCCyPMV8F"
     volumes:
       /mnt/plex_vol/config/:/config:rw
       /mnt/plex_vol/media/:/data:rw
