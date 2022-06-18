@@ -1,11 +1,11 @@
 local:
-  downloads: '/mnt/plex_vol/media/'
-  videos: '/mnt/plex_vol/media/'
+  downloads: '/mnt/plex_vol/media'
+  videos: '/mnt/plex_vol/media'
 
 transmission:
   host: 'localhost'
   port: 9091
-  downloads: '/mnt/plex_vol/media/'
+  downloads: '/mnt/plex_vol/media'
   username: 'transmission'
   password: 'lol12345'
 

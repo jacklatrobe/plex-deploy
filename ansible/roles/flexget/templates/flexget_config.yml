@@ -33,7 +33,6 @@ tasks:
     rss:
       url: '{? feeds.anime ?}'
       all_entries: no
-    include: anime.yml
     transmission:
       <<: *transmission
       content_filename: "{{series_name}} {{series_id|pad(2)}}"
@@ -45,7 +44,6 @@ tasks:
       all_entries: no
       silent: yes
       escape: yes
-    include: tv.yml
     transmission:
       <<: *transmission
       path: '{? transmission.downloads ?}/.tv/'
@@ -97,7 +95,7 @@ tasks:
     accept_all: yes
     disable: builtins
     move:
-      to: "{? local.videos ?}/TV/{{series_name}}/Season {{series_season}}/"
+      to: "{? local.videos ?}/tv/{{series_name}}/Season {{series_season}}/"
       rename: "{{series_name|replace(':',' -')}} {{series_id|pad(2)}}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
   move-movies:
@@ -108,7 +106,7 @@ tasks:
     tmdb_lookup: yes
     disable: builtins
     move:
-      to: "{? local.videos ?}/Movies/"
+      to: "{? local.videos ?}/movies/"
       rename: "{{tmdb_name|replace(':',' -')}} [{{tmdb_year}}]"
   
 schedules:

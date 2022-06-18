@@ -5,14 +5,6 @@
 #####################################################################################
 ## Install Transmission
 #####################################################################################
-- name: Create Transmission directory
-  ansible.builtin.file:
-    path: /opt/transmission
-    state: directory
-    owner: debian-transmission
-    group: debian-transmission
-    mode: '0755'
-
 - name: Install transmission-common
   ansible.builtin.apt:
     name: transmission-common
@@ -54,6 +46,14 @@
     state: stopped
   tags:
   - deploy_configs
+
+- name: Create Transmission directory
+  ansible.builtin.file:
+    path: /opt/transmission
+    state: directory
+    owner: debian-transmission
+    group: debian-transmission
+    mode: '0755'
 
 - name: Write transmission config file
   ansible.builtin.template:
@@ -100,9 +100,109 @@
     group: root
     mode: '0755'
 
+- name: Create Plex Config directory
+  ansible.builtin.file:
+    path: /mnt/plex_vol/config/
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+  tags:
+  - launch_plex
+  
+- name: Create Plex Transcodes directory
+  ansible.builtin.file:
+    path: /mnt/plex_vol/transcode/
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+  tags:
+  - launch_plex
+
 - name: Create media directory
   ansible.builtin.file:
     dest: /mnt/plex_vol/media
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create movies directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/movies
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create .movies directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/.movies
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create TV directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/tv
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create .tv directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/.tv
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create anime directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/anime
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create .anime directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/.anime
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create music directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/Music
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create .music directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/.music
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create series directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/Series
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: Create .series directory
+  ansible.builtin.file:
+    dest: /mnt/plex_vol/media/.series
     state: directory
     owner: root
     group: root
@@ -113,14 +213,12 @@
     name: flexget
     state: latest
     virtualenv: /opt/flexget/
-    virtualenv_python: python3.9
 
 - name: Install transmissionrpc
   ansible.builtin.pip:
     name: transmissionrpc
     state: latest
     virtualenv: /opt/flexget/
-    virtualenv_python: python3.9
 
 # Different things?...
 - name: Install transmission-rpc
@@ -143,7 +241,7 @@
 - name: Write FlexGet variables file
   ansible.builtin.copy:
     src: ./roles/flexget/templates/variables.yml
-    dest: /opt/flexget/config.yml
+    dest: /opt/flexget/variables.yml
     owner: root
     group: root
     mode: 0644

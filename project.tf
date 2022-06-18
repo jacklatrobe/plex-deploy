@@ -15,4 +15,7 @@ resource "digitalocean_project" "plex_project" {
   environment = "Production"
   resources   = [
       digitalocean_droplet.plex1.urn]
+  lifecycle {
+    ignore_changes = all
+  }
 }
