@@ -52,22 +52,54 @@ resource "digitalocean_firewall" "plex-firewall" {
 
   droplet_ids = [digitalocean_droplet.plex1.id]
 
+  # ALLOW ALL TCP
   inbound_rule {
     protocol         = "tcp"
     port_range       = "1-65535"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # ALLOW ALL UDP
   inbound_rule {
     protocol         = "udp"
     port_range       = "1-65535"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
   
+  # ALLOW ALL ICMP
   inbound_rule {
     protocol         = "icmp"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
+
+  # ALLOW SSH
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  # ALLOW FLEXGET WEB UI
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "3550"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  # ALLOW PLEX MEDIA SVR
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "32400"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  # ALLOW TRANSMISSION
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "51413"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
 
   outbound_rule {
     protocol         = "tcp"

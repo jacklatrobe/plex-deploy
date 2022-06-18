@@ -1,0 +1,19 @@
+local:
+  downloads: '/mnt/plex_vol/media/'
+  videos: '/mnt/plex_vol/media/'
+
+transmission:
+  host: 'localhost'
+  port: 9091
+  downloads: '/mnt/plex_vol/media/'
+  username: 'transmission'
+  password: 'lol12345'
+
+feeds:
+  anime: 'https://feed.animetosho.org/atom'
+  tv: 'https://www.torlock.com/television/rss.xml'
+  movies: 'https://www.limetorrents.lol/rss/'
+
+trakt:
+  username:  'jarvis-12041669'
+  movies: 'watchlist'

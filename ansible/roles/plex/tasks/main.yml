@@ -12,6 +12,8 @@
     owner: debian-transmission
     group: debian-transmission
     mode: '0755'
+  tags:
+  - launch_plex
   
 - name: Create Plex Transcodes directory
   ansible.builtin.file:
@@ -20,6 +22,8 @@
     owner: debian-transmission
     group: debian-transmission
     mode: '0755'
+  tags:
+  - launch_plex
 
 - name: Start Plex Container
   community.docker.docker_container:

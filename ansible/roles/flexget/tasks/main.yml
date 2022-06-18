@@ -140,6 +140,16 @@
   tags:
   - deploy_configs
 
+- name: Write FlexGet variables file
+  ansible.builtin.copy:
+    src: ./roles/flexget/templates/variables.yml
+    dest: /opt/flexget/config.yml
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+  - deploy_configs
+
 - name: Write FlexGet systemd service file
   ansible.builtin.template:
     src: ./roles/flexget/templates/flexget.service

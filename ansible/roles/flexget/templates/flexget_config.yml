@@ -1,153 +1,121 @@
----
-templates:
-  movies:
-    exists_movie:
-    - /mnt/plex_vol/media/
-    imdb:
-      min_score: 7
-      min_votes: 100
-      accept_languages:
-            - english
-      reject_mpaa_ratings:
-            - X
-            - NONE
-    transmission:
-      enabled: yes
-      host: 127.0.0.1
-      port: 9091
-      username: transmission
-      password: "lol12345"
-  tv:
-    private_torrents: no
-    thetvdb_lookup: yes
-    exists_series:
-      - /mnt/plex_vol/media/
-    series:
-      settings:
-        tv:
-          exact: yes
-          propers: 3 days
-          quality: 720p+
-          set:
-            path: /mnt/plex_vol/media/{{series_name}}
-      tv:
-          - Archer
-          - Beavis and Butt-head
-          - Big Band Theory
-          - Breaking Bad
-          - Dexter
-          - Fringe
-          - Game of Thrones
-          - Mad Men
-          - MythBusters
-          - The Office
-          - South Park
-          - Queer Eye
-          - Parks and Recreation
-          - Brooklyn 99
-          - Last Week Tonight with John Oliver
-          - Pose
-          - Bobs Burgers
-          - Snowpiercer
-          - Castlevania
-          - Ru Pauls Drag Race
+variables: variables.yml
 
-    transmission:
-      enabled: yes
-      host: localhost
-      port: 9091
-      username: transmission
-      password: lol12345
+web_server:
+  web_ui: yes
+  bind: 0.0.0.0
+  port: 3550
+  base_url: /flexget
+
+templates:
+
+  global:
+    no_entries_ok: yes
+
+  anchors:
+    _transmission: &transmission
+      host: '{? transmission.host ?}'
+      port: '{? transmission.port ?}'
+      username: '{? transmission.username ?}'
+      password: '{? transmission.password ?}'
+
+    _filesystem: &filesystem
+      retrieve: files
+      regexp: '.*\.(mp4|mkv|mp4|mov|mpg|mpeg|avi)$'
+
+    _trakt_list: &trakt_list
+      username: '{? trakt.username ?}'
+      account: '{? trakt.username ?}'
+      strip_dates: yes
 
 tasks:
-  bt-chat.com-tv:
-    priority: 1
-    rss: http://rss.bt-chat.com/?group=3
-    template: tv
 
-  glodls.to-tv:
-    priority: 2
-    rss: https://glodls.to/rss.php?dllink=1
-    template: tv
+  download-anime:
+    rss:
+      url: '{? feeds.anime ?}'
+      all_entries: no
+    include: anime.yml
+    transmission:
+      <<: *transmission
+      content_filename: "{{series_name}} {{series_id|pad(2)}}"
+      path: '{? transmission.downloads ?}/anime/'
 
-  torrentdownloads.pro-tv:
-    priority: 3
-    rss: https://www.torrentdownloads.pro/rss2/popular/8
-    template: tv
-    verify_ssl_certificates: no
+  download-tv:
+    rss:
+      url: '{? feeds.tv ?}'
+      all_entries: no
+      silent: yes
+      escape: yes
+    include: tv.yml
+    transmission:
+      <<: *transmission
+      path: '{? transmission.downloads ?}/.tv/'
+  
+  download-movies:
+    rss:
+      url: '{? feeds.movies ?}'
+      all_entries: no
+    tmdb_lookup: yes
+    list_match:
+      from:
+        - movie_list: movies
+    transmission:
+      <<: *transmission
+      path: '{? transmission.downloads ?}/.movies/'
 
-  limetorrents-tv:
-    priority: 4
-    rss: https://www.limetorrents.lol/rss/
-    template: tv
+  update-movie-list:
+    limit:
+      amount: 10
+      from:
+        trakt_list:
+          <<: *trakt_list
+          list: '{? trakt.movies ?}'
+          type: movies
+    accept_all: yes
+    tmdb_lookup: yes
+    list_add:
+      - movie_list: movies
+    list_remove:
+      - trakt_list:
+          <<: *trakt_list
+          list: '{? trakt.movies ?}'
+          type: movies
 
-  torrentgalaxy.to-tv:
-    priority: 5
-    rss: https://torrentgalaxy.to/rss
-    template: tv
+  sort-anime:
+    filesystem:
+      <<: *filesystem
+      path: '{? local.downloads ?}/anime/'
+    accept_all: yes
+    disable: builtins
+    move:
+      to: "{? local.videos ?}/Anime/{{title|re_replace(' \\d{2}','')|replace('.mkv','')}}/"
+  
+  sort-tv:
+    filesystem:
+      <<: *filesystem
+      path: '{? local.downloads ?}/tv/'
+    metainfo_series: yes
+    accept_all: yes
+    disable: builtins
+    move:
+      to: "{? local.videos ?}/TV/{{series_name}}/Season {{series_season}}/"
+      rename: "{{series_name|replace(':',' -')}} {{series_id|pad(2)}}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
-  torlock-tv:
-    priority: 6
-    rss: https://www.torlock.com/television/rss.xml
-    template: tv
-
-  demonoid-tv:
-    priority: 7
-    rss: https://demonoid.is/rss/0.xml
-    template: tv
-
-  animetosho-tv:
-    priority: 8
-    rss: https://feed.animetosho.org/atom
-    template: tv
-
-  torrentfunk-tv:
-    priority: 9
-    rss: https://www.torrentfunk.com/rss.xml
-    template: tv
-
-  bt-chat.com-movies:
-    priority: 10
-    rss: http://rss.bt-chat.com/?group=3
-    template: movies
-
-  glodls.to-movies:
-    priority: 11
-    rss: https://glodls.to/rss.php?dllink=1
-    template: movies
-
-  torrentdownloads.pro-movies:
-    priority: 12
-    rss: https://www.torrentdownloads.pro/rss2/popular/8
-    template: movies
-    verify_ssl_certificates: no
-
-  limetorrents-movies:
-    priority: 13
-    rss: https://www.limetorrents.lol/rss/
-    template: movies
-
-  torrentgalaxy.to-movies:
-    priority: 14
-    rss: https://torrentgalaxy.to/rss
-    template: movies
-
-  torlock-movies:
-    priority: 15
-    rss: https://www.torlock.com/movies/rss.xml
-    template: movies
-
-  demonoid-movies:
-    priority: 16
-    rss: https://demonoid.is/rss/0.xml
-    template: movies
-
-  animetosho-movies:
-    priority: 17
-    rss: https://feed.animetosho.org/atom
-    template: movies
-
-  torrentfunk-movies:
-    priority: 18
-    rss: https://www.torrentfunk.com/rss.xml
-    template: movies
+  move-movies:
+    filesystem: 
+      <<: *filesystem
+      path: '{? local.downloads ?}/.movies/'
+    accept_all: yes
+    tmdb_lookup: yes
+    disable: builtins
+    move:
+      to: "{? local.videos ?}/Movies/"
+      rename: "{{tmdb_name|replace(':',' -')}} [{{tmdb_year}}]"
+  
+schedules:
+  - tasks: [ download-anime, download-tv, sort-* ]
+    schedule:
+      minute: "*/15"
+  - tasks: [ update-movie-list, download-movies, move-movies ]
+    schedule:
+      hour: "*/6"
+      minute: 10,40

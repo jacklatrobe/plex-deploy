@@ -1,0 +1,153 @@
+---
+templates:
+  movies:
+    exists_movie:
+    - /mnt/plex_vol/media/
+    imdb:
+      min_score: 7
+      min_votes: 100
+      accept_languages:
+            - english
+      reject_mpaa_ratings:
+            - X
+            - NONE
+    transmission:
+      enabled: yes
+      host: 127.0.0.1
+      port: 9091
+      username: transmission
+      password: "lol12345"
+  tv:
+    private_torrents: no
+    thetvdb_lookup: yes
+    exists_series:
+      - /mnt/plex_vol/media/
+    series:
+      settings:
+        tv:
+          exact: yes
+          propers: 3 days
+          quality: 720p+
+          set:
+            path: /mnt/plex_vol/media/{{series_name}}
+      tv:
+          - Archer
+          - Beavis and Butt-head
+          - Big Band Theory
+          - Breaking Bad
+          - Dexter
+          - Fringe
+          - Game of Thrones
+          - Mad Men
+          - MythBusters
+          - The Office
+          - South Park
+          - Queer Eye
+          - Parks and Recreation
+          - Brooklyn 99
+          - Last Week Tonight with John Oliver
+          - Pose
+          - Bobs Burgers
+          - Snowpiercer
+          - Castlevania
+          - Ru Pauls Drag Race
+
+    transmission:
+      enabled: yes
+      host: localhost
+      port: 9091
+      username: transmission
+      password: lol12345
+
+tasks:
+  bt-chat.com-tv:
+    priority: 1
+    rss: http://rss.bt-chat.com/?group=3
+    template: tv
+
+  glodls.to-tv:
+    priority: 2
+    rss: https://glodls.to/rss.php?dllink=1
+    template: tv
+
+  torrentdownloads.pro-tv:
+    priority: 3
+    rss: https://www.torrentdownloads.pro/rss2/popular/8
+    template: tv
+    verify_ssl_certificates: no
+
+  limetorrents-tv:
+    priority: 4
+    rss: https://www.limetorrents.lol/rss/
+    template: tv
+
+  torrentgalaxy.to-tv:
+    priority: 5
+    rss: https://torrentgalaxy.to/rss
+    template: tv
+
+  torlock-tv:
+    priority: 6
+    rss: https://www.torlock.com/television/rss.xml
+    template: tv
+
+  demonoid-tv:
+    priority: 7
+    rss: https://demonoid.is/rss/0.xml
+    template: tv
+
+  animetosho-tv:
+    priority: 8
+    rss: https://feed.animetosho.org/atom
+    template: tv
+
+  torrentfunk-tv:
+    priority: 9
+    rss: https://www.torrentfunk.com/rss.xml
+    template: tv
+
+  bt-chat.com-movies:
+    priority: 10
+    rss: http://rss.bt-chat.com/?group=3
+    template: movies
+
+  glodls.to-movies:
+    priority: 11
+    rss: https://glodls.to/rss.php?dllink=1
+    template: movies
+
+  torrentdownloads.pro-movies:
+    priority: 12
+    rss: https://www.torrentdownloads.pro/rss2/popular/8
+    template: movies
+    verify_ssl_certificates: no
+
+  limetorrents-movies:
+    priority: 13
+    rss: https://www.limetorrents.lol/rss/
+    template: movies
+
+  torrentgalaxy.to-movies:
+    priority: 14
+    rss: https://torrentgalaxy.to/rss
+    template: movies
+
+  torlock-movies:
+    priority: 15
+    rss: https://www.limetorrents.lol/rss/
+    template: movies
+
+  demonoid-movies:
+    priority: 16
+    rss: https://demonoid.is/rss/0.xml
+    template: movies
+
+  animetosho-movies:
+    priority: 17
+    rss: https://feed.animetosho.org/atom
+    template: movies
+
+  torrentfunk-movies:
+    priority: 18
+    rss: https://www.torrentfunk.com/rss.xml
+    template: movies
