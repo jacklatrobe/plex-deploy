@@ -11,7 +11,7 @@ transmission:
 
 feeds:
   anime: 'https://feed.animetosho.org/atom'
-  tv: 'https://www.torlock.com/television/rss.xml'
+  tv: 'https://www.limetorrents.lol/rss/'
   movies: 'https://www.limetorrents.lol/rss/'
 
 trakt:

@@ -33,6 +33,8 @@ tasks:
     rss:
       url: '{? feeds.anime ?}'
       all_entries: no
+    imdb_lookup: yes
+    require_field: imdb_id
     transmission:
       <<: *transmission
       content_filename: "{{series_name}} {{series_id|pad(2)}}"
@@ -44,6 +46,8 @@ tasks:
       all_entries: no
       silent: yes
       escape: yes
+    imdb_lookup: yes
+    require_field: imdb_id
     transmission:
       <<: *transmission
       path: '{? transmission.downloads ?}/.tv/'
@@ -52,7 +56,8 @@ tasks:
     rss:
       url: '{? feeds.movies ?}'
       all_entries: no
-    tmdb_lookup: yes
+    imdb_lookup: yes
+    require_field: imdb_id
     list_match:
       from:
         - movie_list: movies
@@ -69,7 +74,7 @@ tasks:
           list: '{? trakt.movies ?}'
           type: movies
     accept_all: yes
-    tmdb_lookup: yes
+    imdb_lookup: yes
     list_add:
       - movie_list: movies
     list_remove:
